@@ -47,7 +47,7 @@ const parse=s=>{const[a,b,c]=s.split("-");return new Date(+a,b-1,+c)};
 async function hash(p,salt){const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(salt+":"+p));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join("")}
 function toast(m){const t=document.createElement("div");t.className="toast";t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),2200)}
 const LS={get:k=>{try{return localStorage.getItem(k)}catch(e){return null}},set:(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}}};
-const fbUrl=()=>(LS.get("sqfb")||"").replace(/\/+$/,"");
+const fbUrl=()=>(LS.get("sqfb")??"https://studyquest-b6469-default-rtdb.firebaseio.com").replace(/\/+$/,"");
 async function load(c){const u=fbUrl();if(u){const r=await fetch(u+"/fam/"+c+".json");if(!r.ok)throw 0;return await r.json()}const t=LS.get("sqfam_"+c);return t?JSON.parse(t):null}
 async function put(c,d){const u=fbUrl();if(u){const r=await fetch(u+"/fam/"+c+".json",{method:"PUT",body:JSON.stringify(d)});if(!r.ok)throw 0}else LS.set("sqfam_"+c,JSON.stringify(d))}
 const ref=c=>({async get(){const d=await load(c);return{exists:!!d,data:()=>d}},async set(d){await put(c,d)},
